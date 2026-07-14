@@ -1,7 +1,7 @@
-import { Menu, RotateCcw } from 'lucide-react'
+import { LogOut, Menu, RotateCcw } from 'lucide-react'
 import { CompassLogo } from './CompassLogo'
 
-export function ChatHeader({ onMenu, onRestart }: { onMenu: () => void; onRestart: () => void }) {
+export function ChatHeader({ onMenu, onRestart, onEndChat, chatEnded }: { onMenu: () => void; onRestart: () => void; onEndChat?: () => void; chatEnded?: boolean }) {
   return (
     <header className="relative z-20 flex h-[74px] shrink-0 items-center justify-between border-b border-white/10 bg-[#06131d]/75 px-4 backdrop-blur-2xl sm:px-6">
       <div className="flex min-w-0 items-center gap-3">
@@ -14,6 +14,14 @@ export function ChatHeader({ onMenu, onRestart }: { onMenu: () => void; onRestar
         </div>
       </div>
       <div className="flex items-center gap-2">
+        {!chatEnded && onEndChat ? (
+          <button
+            onClick={onEndChat}
+            className="inline-flex h-10 items-center gap-2 rounded-xl border border-rose-300/20 bg-rose-400/10 px-3 text-sm font-medium text-rose-200 transition hover:bg-rose-400/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+          >
+            <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">End chat</span>
+          </button>
+        ) : null}
         <button
           onClick={onMenu}
           className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 text-sm font-medium text-slate-200 transition hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"

@@ -2,11 +2,11 @@ import {
   AlertCircle,
   ArrowRight,
   Check,
-  Headphones,
   MessageCircle,
   Package,
   RotateCcw,
   Sparkles,
+  Star,
   Truck,
   User,
 } from 'lucide-react'
@@ -192,6 +192,22 @@ export function MessageCard({ payload }: { payload: BotMessagePayload }) {
     return (
       <SectionShell accent="rose">
         <div className="flex items-start gap-3"><div className="grid h-10 w-10 place-items-center rounded-full border border-rose-200/20 bg-rose-300/10 text-rose-100"><AlertCircle className="h-5 w-5" /></div><div><h3 className="font-display text-base font-semibold text-white">{payload.title}</h3><p className="mt-2 text-sm leading-6 text-slate-300">{payload.text}</p></div></div>
+      </SectionShell>
+    )
+  }
+
+  if (payload.type === 'chat_ended') {
+    return (
+      <SectionShell accent="violet">
+        <div className="flex items-start gap-3">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-violet-200/20 bg-violet-300/10 text-violet-100">
+            <Star className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="font-display text-lg font-semibold text-white">{payload.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-300">{payload.text}</p>
+          </div>
+        </div>
       </SectionShell>
     )
   }

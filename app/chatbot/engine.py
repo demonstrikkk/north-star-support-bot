@@ -10,6 +10,7 @@ from app.schemas.chat import (
     Intent,
     SessionState,
 )
+from app.services.conversation_logger import log_chat, log_chat_end
 from app.services.order_service import lookup_order
 from app.services.recommendation_service import (
     get_question,
@@ -360,6 +361,56 @@ def _complete_handoff(session_id: str, session: SessionState, issue: str) -> Cha
     )
 
 
+def _end_chat(session_id: str, session: SessionState) -> ChatResponse:
+    session.chat_ended = True
+    _set_state(session, ConversationState.CHAT_ENDED)
+    return _response(
+        session_id,
+        session,
+        Intent.CHAT_ENDED,
+        [
+            ChatMessage(
+                type="text",
+                text="Your chat session has ended. Please rate your experience before you go.",
+            ),
+            ChatMessage(
+                type="chat_ended",
+                title="Chat ended",
+                text="How satisfied were you with the support you received?",
+                data={"satisfaction": None},
+            ),
+        ],
+        [
+            ChatAction(label="Very satisfied", value="satisfaction_5", icon="star", variant="primary"),
+            ChatAction(label="Satisfied", value="satisfaction_4", icon="star"),
+            ChatAction(label="Neutral", value="satisfaction_3", icon="star"),
+            ChatAction(label="Unsatisfied", value="satisfaction_2", icon="star"),
+            ChatAction(label="Very unsatisfied", value="satisfaction_1", icon="star"),
+        ],
+    )
+
+
+def _satisfaction(session_id: str, session: SessionState, rating: int) -> ChatResponse:
+    session.satisfaction = rating
+    log_chat_end(session_id, session, satisfaction=rating)
+    return _response(
+        session_id,
+        session,
+        Intent.CHAT_ENDED,
+        [
+            ChatMessage(
+                type="chat_ended",
+                title="Thank you!",
+                text=f"You rated your experience {rating}/5. Your feedback helps us improve.",
+                data={"satisfaction": rating},
+            )
+        ],
+        [
+            ChatAction(label="Start a new chat", value="restart", icon="refresh-ccw", variant="primary"),
+        ],
+    )
+
+
 def _fallback(session_id: str, session: SessionState) -> ChatResponse:
     session.fallback_count += 1
     _set_state(session, ConversationState.FALLBACK)
@@ -407,6 +458,27 @@ def process_chat(
         return welcome(session_id, session)
 
     if action:
+        if action.startswith("satisfaction_"):
+            try:
+                rating = int(action.split("_", 1)[1])
+                rating = max(1, min(5, rating))
+            except (ValueError, IndexError):
+                rating = 3
+            return _satisfaction(session_id, session, rating)
+
+    if session.chat_ended:
+        if action == "restart":
+            session.__dict__.update(SessionState().__dict__)
+            return welcome(session_id, session)
+        return _response(
+            session_id,
+            session,
+            Intent.CHAT_ENDED,
+            [ChatMessage(type="chat_ended", title="Chat ended", text="This session has ended. Start a new chat to continue.", data={})],
+            [ChatAction(label="Start a new chat", value="restart", icon="refresh-ccw", variant="primary")],
+        )
+
+    if action:
         if action in {"main_menu", "continue_chatbot"}:
             return _main_menu(session_id, session)
         if action == "restart":
@@ -416,6 +488,8 @@ def process_chat(
             if session.state == ConversationState.RECOMMENDATION_PREFERENCE:
                 return _start_recommendation(session_id, session)
             return _main_menu(session_id, session)
+        if action == "end_chat":
+            return _end_chat(session_id, session)
         if action == "intent_order_tracking" or action == "track_another":
             return _start_order(session_id, session)
         if action.startswith("order_"):
@@ -439,7 +513,7 @@ def process_chat(
                 session_id,
                 session,
                 Intent.ORDER_TRACKING,
-                [ChatMessage(type="text", text="Great — I’m glad everything arrived. Is there anything else I can help with?")],
+                [ChatMessage(type="text", text="Great — I'm glad everything arrived. Is there anything else I can help with?")],
                 MAIN_ACTIONS,
             )
 

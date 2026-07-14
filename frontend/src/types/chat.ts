@@ -9,6 +9,7 @@ export type MessageType =
   | 'live_agent'
   | 'fallback'
   | 'error'
+  | 'chat_ended'
 
 export type ActionVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
 

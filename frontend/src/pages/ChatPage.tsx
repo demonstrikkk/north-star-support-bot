@@ -8,7 +8,7 @@ import { SupportRail } from '../components/SupportRail'
 import { useChatSession } from '../hooks/useChatSession'
 
 export function ChatPage() {
-  const { entries, isTyping, error, submitMessage, chooseAction, restart } = useChatSession()
+  const { entries, isTyping, error, chatEnded, submitMessage, chooseAction, endChat, restart } = useChatSession()
 
   const chooseByValue = (value: string) => {
     void chooseAction({ label: value, value, variant: 'secondary' })
@@ -30,9 +30,9 @@ export function ChatPage() {
         >
           <BrandRail />
           <section className="flex min-w-0 flex-1 flex-col">
-            <ChatHeader onMenu={() => chooseByValue('main_menu')} onRestart={() => void restart()} />
+            <ChatHeader onMenu={() => chooseByValue('main_menu')} onRestart={() => void restart()} onEndChat={() => void endChat()} chatEnded={chatEnded} />
             <div className="flex min-h-0 flex-1">
-              <ChatWorkspace entries={entries} isTyping={isTyping} error={error} onSubmit={(message) => void submitMessage(message)} onAction={choose} />
+              <ChatWorkspace entries={entries} isTyping={isTyping} error={error} onSubmit={(message) => void submitMessage(message)} onAction={choose} chatEnded={chatEnded} />
               <SupportRail onAction={chooseByValue} />
             </div>
           </section>

@@ -28,10 +28,14 @@ export function useChatSession() {
   const [entries, setEntries] = useState<ChatEntry[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [chatEnded, setChatEnded] = useState(false)
   const requestIdRef = useRef(0)
 
   const appendResponse = useCallback((response: ChatResponse) => {
     setEntries((current) => [...current, ...responseToEntry(response)])
+    if (response.state === 'chat_ended') {
+      setChatEnded(true)
+    }
   }, [])
 
   const run = useCallback(
@@ -100,11 +104,16 @@ export function useChatSession() {
     [run],
   )
 
+  const endChat = useCallback(() => {
+    return run('', 'end_chat', false)
+  }, [run])
+
   const restart = useCallback(async () => {
     requestIdRef.current += 1
     setEntries([])
     setIsTyping(true)
     setError(null)
+    setChatEnded(false)
     try {
       const response = await resetSession(sessionId)
       appendResponse(response)
@@ -119,8 +128,10 @@ export function useChatSession() {
     entries,
     isTyping,
     error,
+    chatEnded,
     submitMessage,
     chooseAction,
+    endChat,
     restart,
   }
 }

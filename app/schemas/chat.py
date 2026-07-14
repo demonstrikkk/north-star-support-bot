@@ -16,6 +16,8 @@ class Intent(StrEnum):
     RESTART = "restart"
     BACK = "back"
     FALLBACK = "fallback"
+    CHAT_ENDED = "chat_ended"
+    SATISFACTION = "satisfaction"
     UNKNOWN = "unknown"
 
 
@@ -31,6 +33,7 @@ class ConversationState(StrEnum):
     LIVE_AGENT_CONTEXT = "live_agent_context"
     LIVE_AGENT = "live_agent"
     FALLBACK = "fallback"
+    CHAT_ENDED = "chat_ended"
 
 
 class SessionState(BaseModel):
@@ -40,6 +43,8 @@ class SessionState(BaseModel):
     recommendation_activity: str | None = None
     recommendation_preference: str | None = None
     handoff_issue: str | None = None
+    chat_ended: bool = False
+    satisfaction: int | None = Field(default=None, ge=1, le=5)
 
 
 class ChatRequest(BaseModel):
@@ -67,6 +72,7 @@ class ChatMessage(BaseModel):
         "live_agent",
         "fallback",
         "error",
+        "chat_ended",
     ]
     text: str | None = None
     title: str | None = None
@@ -86,3 +92,6 @@ class ChatResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: Literal["ok"] = "ok"
+    version: str = "1.0.0"
+    uptime_seconds: float = 0.0
+    active_sessions: int = 0

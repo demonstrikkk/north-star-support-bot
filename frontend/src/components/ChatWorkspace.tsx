@@ -11,12 +11,14 @@ export function ChatWorkspace({
   error,
   onSubmit,
   onAction,
+  chatEnded = false,
 }: {
   entries: ChatEntry[]
   isTyping: boolean
   error: string | null
   onSubmit: (message: string) => void
   onAction: (action: ChatAction) => void
+  chatEnded?: boolean
 }) {
   const bottomRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -44,7 +46,7 @@ export function ChatWorkspace({
           <div ref={bottomRef} />
         </div>
       </div>
-      <ChatComposer onSubmit={onSubmit} disabled={isTyping} isTyping={isTyping} />
+      {chatEnded ? null : <ChatComposer onSubmit={onSubmit} disabled={isTyping} isTyping={isTyping} />}
     </main>
   )
 }

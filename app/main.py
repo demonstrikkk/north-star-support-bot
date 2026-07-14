@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+import time
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -8,20 +10,32 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api.chat import router as chat_router
-from app.schemas.chat import HealthResponse
+from app.chatbot.sessions import session_store
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
+_start_time = time.time()
+
 app = FastAPI(
     title="North Star Support Bot",
-    description="Evaluator-ready outdoor customer-support chatbot with deterministic conversation logic.",
+    description="Outdoor customer-support chatbot with deterministic conversation logic.",
     version="1.0.0",
 )
 
+
+def _parse_origins(raw: str) -> list[str]:
+    raw = raw.strip()
+    if raw == "*":
+        return ["*"]
+    return [o.strip() for o in raw.split(",") if o.strip()]
+
+
+origins = _parse_origins(os.getenv("CORS_ORIGINS", "*"))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -30,9 +44,14 @@ app.add_middleware(
 app.include_router(chat_router)
 
 
-@app.get("/api/health", response_model=HealthResponse)
-def health() -> HealthResponse:
-    return HealthResponse()
+@app.get("/api/health")
+def health() -> dict:
+    return {
+        "status": "ok",
+        "version": "1.0.0",
+        "uptime_seconds": round(time.time() - _start_time, 2),
+        "active_sessions": len(session_store._sessions),
+    }
 
 
 if (STATIC_DIR / "assets").exists():
