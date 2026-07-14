@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #e2e8f0;
+  background: #04101a;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { background: #04101a; }
+body { margin: 0; min-width: 320px; min-height: 100vh; overflow: hidden; }
+button, textarea, input, select { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+
+.chat-scroll { scrollbar-width: thin; scrollbar-color: rgba(148,163,184,.22) transparent; }
+.chat-scroll::-webkit-scrollbar { width: 7px; }
+.chat-scroll::-webkit-scrollbar-track { background: transparent; }
+.chat-scroll::-webkit-scrollbar-thumb { background: rgba(148,163,184,.18); border-radius: 999px; }
+.chat-scroll::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,.3); }
+
+.aurora-composer {
+  background: linear-gradient(90deg, rgba(45,212,191,.2), rgba(255,255,255,.07), rgba(167,139,250,.18));
+}
+.aurora-composer::before,
+.aurora-composer::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: .24;
+  filter: blur(16px);
+  background: conic-gradient(from 90deg, rgba(45,212,191,.55), rgba(59,130,246,.25), rgba(168,85,247,.55), rgba(236,72,153,.22), rgba(45,212,191,.55));
+  transition: opacity .4s ease, filter .4s ease;
+}
+.aurora-composer::after { inset: -7px; filter: blur(26px); opacity: .1; }
+.aurora-composer-active::before { opacity: .75; animation: aurora-spin 4.5s linear infinite; }
+.aurora-composer-active::after { opacity: .36; animation: aurora-breathe 2.6s ease-in-out infinite; }
+
+@keyframes aurora-spin { to { transform: rotate(360deg); } }
+@keyframes aurora-breathe { 0%,100% { transform: scale(.98); opacity:.18; } 50% { transform: scale(1.02); opacity:.42; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
