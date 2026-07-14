@@ -9,10 +9,12 @@ import {
   MessageCircle,
   Mountain,
   Package,
+  RefreshCcw,
   RotateCcw,
   Search,
   Snowflake,
   Sparkles,
+  Star,
   TentTree,
   Truck,
 } from 'lucide-react'
@@ -20,6 +22,7 @@ import {
 const icons = {
   package: Package,
   'rotate-ccw': RotateCcw,
+  'refresh-ccw': RefreshCcw,
   mountain: Mountain,
   truck: Truck,
   headphones: Headphones,
@@ -34,6 +37,7 @@ const icons = {
   'arrow-left': ArrowLeft,
   sparkles: Sparkles,
   'message-circle': MessageCircle,
+  star: Star,
 }
 
 export function Icon({ name, className = 'h-4 w-4' }: { name?: string | null; className?: string }) {
