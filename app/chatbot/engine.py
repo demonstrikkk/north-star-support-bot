@@ -342,7 +342,15 @@ def _complete_handoff(session_id: str, session: SessionState, issue: str) -> Cha
                 title="Live Agent Handoff",
                 status="Simulated handoff active",
                 detail="In a production system, a support representative would continue from here.",
-                data={"issue": session.handoff_issue, "context_preserved": True},
+                data={
+                    "issue": session.handoff_issue,
+                    "context_preserved": True,
+                    "agent_name": "Sarah",
+                    "agent_greeting": (
+                        f"Hi! I'm Sarah from North Star Support. I've reviewed your chat "
+                        f"and I can help you with {session.handoff_issue.lower()}."
+                    ),
+                },
             )
         ],
         [

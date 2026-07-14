@@ -24,26 +24,72 @@ button { -webkit-tap-highlight-color: transparent; }
 .chat-scroll::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,.3); }
 
 .aurora-composer {
-  background: linear-gradient(90deg, rgba(45,212,191,.2), rgba(255,255,255,.07), rgba(167,139,250,.18));
+  box-shadow: 0 0 18px rgba(24, 88, 122, 0.1), 0 4px 12px rgba(0, 0, 0, 0.35);
+  transition: box-shadow .3s ease, transform .3s ease, opacity .3s ease;
 }
 .aurora-composer::before,
 .aurora-composer::after {
   content: '';
   position: absolute;
-  inset: -2px;
-  z-index: -1;
+  inset: 0;
   border-radius: inherit;
-  opacity: .24;
-  filter: blur(16px);
-  background: conic-gradient(from 90deg, rgba(45,212,191,.55), rgba(59,130,246,.25), rgba(168,85,247,.55), rgba(236,72,153,.22), rgba(45,212,191,.55));
-  transition: opacity .4s ease, filter .4s ease;
+  pointer-events: none;
 }
-.aurora-composer::after { inset: -7px; filter: blur(26px); opacity: .1; }
-.aurora-composer-active::before { opacity: .75; animation: aurora-spin 4.5s linear infinite; }
-.aurora-composer-active::after { opacity: .36; animation: aurora-breathe 2.6s ease-in-out infinite; }
+.aurora-composer::before {
+  padding: 5px;
+  background: linear-gradient(90deg, rgba(56, 189, 248, .92) 0%, rgba(45, 212, 191, .8) 24%, rgba(99, 102, 241, .88) 56%, rgba(168, 85, 247, .82) 78%, rgba(56, 189, 248, .92) 100%);
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: .38;
+  transition: opacity .35s ease, filter .35s ease, transform .35s ease;
+}
+.aurora-composer::after {
+  inset: -8px;
+  background: linear-gradient(90deg, rgba(56, 189, 248, .35) 0%, rgba(45, 212, 191, .22) 28%, rgba(99, 102, 241, .28) 60%, rgba(168, 85, 247, .24) 84%, rgba(56, 189, 248, .35) 100%);
+  background-size: 200% 100%;
+  filter: blur(18px);
+  opacity: .08;
+  z-index: -1;
+  transition: opacity .35s ease, filter .35s ease, transform .35s ease;
+}
+.aurora-composer:focus-within {
+  transform: scale(1.003);
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.14), 0 6px 20px rgba(0, 0, 0, 0.46);
+}
+.aurora-composer-active::before {
+  opacity: .92;
+  animation: gemini-perimeter-flow 4s linear infinite, aurora-soft-breathe 3.2s ease-in-out infinite;
+  filter: saturate(115%);
+}
+.aurora-composer-active::after {
+  opacity: .2;
+  animation: gemini-perimeter-flow 4s linear infinite reverse, aurora-soft-breathe 4.1s ease-in-out infinite;
+}
 
-@keyframes aurora-spin { to { transform: rotate(360deg); } }
-@keyframes aurora-breathe { 0%,100% { transform: scale(.98); opacity:.18; } 50% { transform: scale(1.02); opacity:.42; } }
+.gemini-input-inner {
+  background-image: radial-gradient(circle at top, rgba(255,255,255,.025), transparent 55%);
+}
+
+@keyframes gemini-perimeter-flow {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: -200% 0%;
+  }
+}
+
+@keyframes aurora-soft-breathe {
+  0%, 100% {
+    transform: scale(.995);
+  }
+  50% {
+    transform: scale(1.01);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }

@@ -3,10 +3,12 @@ import {
   ArrowRight,
   Check,
   Headphones,
+  MessageCircle,
   Package,
   RotateCcw,
   Sparkles,
   Truck,
+  User,
 } from 'lucide-react'
 import type { BotMessagePayload } from '../types/chat'
 
@@ -136,11 +138,53 @@ export function MessageCard({ payload }: { payload: BotMessagePayload }) {
   }
 
   if (payload.type === 'live_agent') {
+    const agentName = String(payload.data.agent_name ?? 'Support Agent')
+    const greeting = String(payload.data.agent_greeting ?? '')
     return (
-      <SectionShell accent="emerald">
-        <div className="flex items-start gap-3"><div className="grid h-11 w-11 place-items-center rounded-full border border-emerald-200/20 bg-emerald-300/10 text-emerald-100"><Headphones className="h-5 w-5" /></div><div><div className="flex flex-wrap items-center gap-2"><h3 className="font-display text-lg font-semibold text-white">{payload.title}</h3><span className="rounded-md bg-emerald-400/15 px-2 py-1 text-xs font-semibold text-emerald-200">{payload.status}</span></div><p className="mt-2 text-sm leading-6 text-slate-300">{payload.detail}</p></div></div>
-        <div className="mt-4 grid gap-2 sm:grid-cols-2"><div className="rounded-xl border border-white/8 bg-white/[0.025] p-3"><p className="text-xs text-slate-500">Issue</p><p className="mt-1 text-sm font-medium text-white">{String(payload.data.issue)}</p></div><div className="rounded-xl border border-white/8 bg-white/[0.025] p-3"><p className="text-xs text-slate-500">Conversation context</p><p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-emerald-200"><Check className="h-4 w-4" /> Preserved</p></div></div>
-      </SectionShell>
+      <>
+        <div className="relative flex items-center gap-3 py-2">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent" />
+          <span className="whitespace-nowrap text-[10px] uppercase tracking-[0.18em] text-slate-600">Bot conversation ended</span>
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent" />
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-emerald-300/15 bg-gradient-to-br from-emerald-900/40 to-[#0a1823]/92 p-4 shadow-[0_20px_50px_rgba(0,0,0,.24)] sm:p-5">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-emerald-300/15 via-cyan-300/5 to-transparent" />
+
+          <div className="flex items-start gap-3">
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-emerald-300/20 bg-gradient-to-br from-emerald-500/20 to-emerald-800/20 text-emerald-200 shadow-[0_0_20px_rgba(52,211,153,.12)]">
+              <User className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-display text-base font-semibold text-white">{agentName}</span>
+                <span className="flex items-center gap-1 rounded-md bg-emerald-400/12 px-2 py-0.5 text-[11px] font-medium text-emerald-200">
+                  <MessageCircle className="h-3 w-3" /> Customer Support
+                </span>
+              </div>
+              {greeting ? (
+                <p className="mt-3 text-sm leading-6 text-slate-200">{greeting}</p>
+              ) : null}
+              <p className="mt-2 text-xs text-slate-500">Usually responds in a few seconds</p>
+            </div>
+          </div>
+
+          <div className="mt-5 h-px bg-white/8" />
+
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <div className="rounded-xl border border-white/8 bg-white/[0.025] p-3">
+              <p className="text-xs text-slate-500">Issue</p>
+              <p className="mt-1 text-sm font-medium text-white">{String(payload.data.issue)}</p>
+            </div>
+            <div className="rounded-xl border border-white/8 bg-white/[0.025] p-3">
+              <p className="text-xs text-slate-500">Conversation context</p>
+              <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-emerald-200">
+                <Check className="h-4 w-4" /> Preserved
+              </p>
+            </div>
+          </div>
+        </div>
+      </>
     )
   }
 

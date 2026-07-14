@@ -13,7 +13,7 @@ export function BrandRail() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(45,212,191,.32),transparent_30%),linear-gradient(180deg,rgba(4,20,30,.8),rgba(2,9,14,.98))]" />
       <div className="absolute inset-x-0 bottom-0 h-[58%] bg-[linear-gradient(180deg,transparent,rgba(2,10,15,.65)),radial-gradient(ellipse_at_bottom,rgba(12,74,62,.45),transparent_62%)]" />
       <div className="absolute -left-20 top-40 h-72 w-72 rounded-full bg-emerald-400/15 blur-[80px]" />
-      <div className="relative z-10 flex h-full flex-col px-7 py-8">
+      <div className="relative z-10 flex h-full min-h-0 flex-col gap-8 px-7 py-8">
         <div className="flex flex-col items-center text-center">
           <CompassLogo className="h-20 w-20" />
           <h1 className="mt-5 font-display text-xl font-semibold tracking-[0.22em] text-white">NORTH STAR</h1>
@@ -23,7 +23,7 @@ export function BrandRail() {
           </p>
         </div>
 
-        <div className="mt-8 space-y-4">
+        <div className="space-y-4">
           {features.map(({ icon: FeatureIcon, title, detail }) => (
             <div key={title} className="flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.035] p-3 backdrop-blur-sm">
               <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-emerald-300/20 bg-emerald-400/10 text-emerald-200">
@@ -37,7 +37,7 @@ export function BrandRail() {
           ))}
         </div>
 
-        <div className="mt-auto space-y-3">
+        <div className="mt-auto space-y-4 pb-1">
           <div className="rounded-2xl border border-amber-100/12 bg-slate-950/45 p-4 backdrop-blur-md">
             <div className="flex items-center gap-2 text-xs font-semibold text-amber-100">
               <Truck className="h-4 w-4" /> Shipping at a glance
