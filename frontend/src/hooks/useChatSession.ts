@@ -93,21 +93,6 @@ export function useChatSession() {
 
   const submitMessage = useCallback((message: string) => run(message, null, true), [run])
 
-  const chooseAction = useCallback(
-    (action: ChatAction) => {
-      if (action.value === 'open_returns') {
-        window.location.href = '/returns'
-        return Promise.resolve()
-      }
-      return run('', action.value, true, action.label)
-    },
-    [run],
-  )
-
-  const endChat = useCallback(() => {
-    return run('', 'end_chat', false)
-  }, [run])
-
   const restart = useCallback(async () => {
     requestIdRef.current += 1
     setEntries([])
@@ -123,6 +108,24 @@ export function useChatSession() {
       setIsTyping(false)
     }
   }, [appendResponse, sessionId])
+
+  const chooseAction = useCallback(
+    (action: ChatAction) => {
+      if (action.value === 'open_returns') {
+        window.location.href = '/returns'
+        return Promise.resolve()
+      }
+      if (action.value === 'restart') {
+        return restart()
+      }
+      return run('', action.value, true, action.label)
+    },
+    [run, restart],
+  )
+
+  const endChat = useCallback(() => {
+    return run('', 'end_chat', false)
+  }, [run])
 
   return {
     entries,
